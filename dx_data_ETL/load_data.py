@@ -40,6 +40,7 @@ Load data to redis and mysql
 """
 import re
 import time
+import math
 import redis
 import string
 
@@ -73,14 +74,20 @@ class LoadData(object):
         Args:
             no
         """
-        server_ip = '192.168.0.2'
+        server_ip = '120.55.189.211'
         server_port = 6379
         redis1 = redis.StrictRedis(host=server_ip, port=server_port,
-                                   db=6, password='kunyandata')
+                                   db=0, password='7ifW4i@M')
         self.stock_codes = redis1.lrange('stock:list', 0, -1)
         redis2 = redis.StrictRedis(host=server_ip, port=server_port,
-                                   db=6, password='kunyandata')
+                                   db=0, password='7ifW4i@M')
+        # redis1 = redis.StrictRedis(host=server_ip, port=server_port,
+        #                            db=6, password='kunyandata')
+        # self.stock_codes = redis1.lrange('stock:list', 0, -1)
+        # redis2 = redis.StrictRedis(host=server_ip, port=server_port,
+        #                            db=6, password='kunyandata')
         self.pipe2 = redis2.pipeline()
+        # self.pipe2 = redis2
         for stock_code in self.stock_codes:
             self.name_urls.append(redis1.get('stock:%s:nameurl'
                                              % stock_code))
@@ -96,9 +103,30 @@ class LoadData(object):
             no
         """
         open_file = open(self.input_file, 'r')
+        # k = 1
+        # for line in open_file:
+        #     self._line_to_mysql_and_redis(line)
+        #     self.pipe2.execute()
+        #     k += 1
+        #     print k
+        count = -1
+        for count, lines in enumerate(open_file):
+            pass
+        count += 1
+        open_file.close()
+        open_file = open(self.input_file, 'r')
+        j = 1
+        k = 1
         for line in open_file:
             self._line_to_mysql_and_redis(line)
-        self.pipe2.execute()
+            if k == count:
+                self.pipe2.execute()
+                print '%s load finished' % self.input_file
+            elif k > (j * 500000):
+                self.pipe2.execute()
+                j += 1
+                print j
+            k += 1
         open_file.close()
 
     def _line_to_mysql_and_redis(self, line):

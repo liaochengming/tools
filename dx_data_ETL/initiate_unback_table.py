@@ -71,10 +71,10 @@ class InitTable(object):
         self.ssh.connect(remote_ip, 22, user, password)
         self.transport = paramiko.Transport((remote_ip, 22))
         self.transport.connect(username=user, password=password)
-        self.remote_path = '/home/wht/'
-        self.local_path = 'D:/home/'
-        self.conn = MySQLdb.connect(host='192.168.0.33', user='root',
-                                    passwd='root', db='stock')
+        self.remote_path = '/home/zjdx/'
+        self.local_path = '/home/hadoop/zjdx'
+        self.conn = MySQLdb.connect(host=remote_ip, user=user,
+                                    passwd='hadoop', db='stock')
         self.curcor = self.conn.cursor()
 
     def get_files_list(self):
@@ -174,7 +174,7 @@ class InitTable(object):
                 time_file = line[7:11]+'-'+line[11:13]+ '-'\
                        +line[13:15]+' '+line[15:17]
                 if time_file not in backed_hour_list:
-                    time.append(t)
+                    time.append(time_file)
             return time
         else:
             print "All files have been backed"
@@ -189,8 +189,8 @@ class InitTable(object):
         Attributes:
             no.
         """
-        data_files = self.get_data_files_list()
-        remote_data_file_list = self.get_files_list()
+        data_files_list = self.get_file_comment()
+        remote_file_list = self.get_files_list()
         unbacked_list = self.get_unbacked_list()
         isexist = os.path.exists(self.local_path+'data_files/')
         if not isexist:
@@ -200,10 +200,10 @@ class InitTable(object):
             print "begining to move data files"
             j = ''
             i = 1.0
-            length = len(remote_data_file_list)
+            length = len(remote_file_list)
             last_index = 0
-            for line in data_files:
-                if line not in remote_data_file_list:
+            for line in data_files_list:
+                if line not in remote_file_list:
                     continue
                 sftp.get(self.remote_path+line, self.local_path+'data_files/'+line)
                 local = os.path.exists(self.local_path+'data_files/'+line)

@@ -42,6 +42,7 @@ run on 192.168.0.2
 import os
 import paramiko
 import re
+import time
 
 
 class BackupRemote(object):
@@ -62,16 +63,17 @@ class BackupRemote(object):
         """
         remote_ip = '120.55.189.211'
         user = 'root'
-        password = 'Dataservice2015'
+        password = '29fVmC@u'
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.ssh.connect(remote_ip, 22, user, password)
         self.transport = paramiko.Transport((remote_ip, 22))
         self.transport.connect(username=user, password=password)
-        self.remote_path = '/home/wht/'
-        self.local_path = 'D:/home/hadoop/wht/zjdx_backed/'
+        self.remote_path_list = ['/home/zjdx/unbacked_redis_files/', '/home/jsdx/unbacked_redis_files/']
+        self.local_path_list = ['/home/hadoop/zjdxdata_files/', '/home/hadoop/jsdxdata_files/']
 
     def get_files_list(self, remote_path):
+
         """get remote kunyan data file list.
 
 
@@ -82,13 +84,18 @@ class BackupRemote(object):
         if not stderr.readlines():
             remote_file = stdout.readlines()
         result = []
-        for line in remote_file:
-            grep = re.search(r'^kunyan_\d{10}$', line)
-            if grep:
-                result.append(line.encode().split()[0])
-        return result
+        if remote_file:
+            for line in remote_file:
+                grep_zjdx = re.search(r'^kunyan_\d{10}$', line)
+                grep_jsdx = re.search(r'^jsdx_\d{10}$', line)
+                grep = grep_jsdx or grep_zjdx
+                if grep:
+                    result.append(line.encode().split()[0])
+            return result
+        else:
+            print "Remote file empty"
 
-    def download_file(self, file_name):
+    def download_file(self, file_name, remote_path, local_path):
         """download remote file.
 
 
@@ -96,7 +103,7 @@ class BackupRemote(object):
             file_name:file name.
         """
         sftp = paramiko.SFTPClient.from_transport(self.transport)
-        sftp.get(self.remote_path+file_name, self.local_path+file_name)
+        sftp.get(remote_path+file_name, local_path+file_name)
 
     # def delete_file(self, file_name):
     #     """delete remote file.
@@ -107,29 +114,39 @@ class BackupRemote(object):
     #     """
     #     self.ssh.exec_command("rm -f %s" % (self.remote_path+file_name))
 
-    def main(self):
+    def just_do_it(self, remote_path, local_path):
         """main function.
 
 
         Attributes:
             no.
         """
-        remote_list = self.get_files_list(self.remote_path)
+        log_time = time.strftime('%Y-%m-%d %X', time.localtime())
+        log = open('/home/hadoop/log', 'a+')
+        log.write('Begin at '+log_time+'\n')
+        print 'Begin at '+log_time+'\n'
+        remote_list = self.get_files_list(remote_path)
         for line in remote_list:
-            self.download_file(line)
-            all_files = os.listdir(self.local_path)
+            self.download_file(line, remote_path, local_path)
+            all_files = os.listdir(local_path)
             local_file_list = []
             for file_name in all_files:
-                result = re.search(r'^kunyan_\d{10}$', file_name)
+                result_1 = re.search(r'^kunyan_\d{10}$', file_name)
+                result_2 = re.search(r'^jsdx_\d{10}$', file_name)
+                result = result_1 or result_2
                 if result:
                     local_file_list.append(file_name)
             if line in local_file_list:
-                stdin, stdout, stderr = self.ssh.exec_command("rm -f %s" % (self.remote_path+line))
+                stdin, stdout, stderr = self.ssh.exec_command("rm -f %s" % (remote_path+line))
                 print "remote data file '%s' has been downloaded successfully" % line
                 if not stderr.readlines():
                     print "remote files '%s' has been deleted successfully" % line
         self.ssh.close()
         self.transport.close()
+        log_time = time.strftime('%Y-%m-%d %X', time.localtime())
+        log.write('Begin at '+log_time+'\n')
+        print 'End at '+log_time+'\n'+'\n'
+        log.close()
 
 if __name__ == '__main__':
     back_up = BackupRemote()

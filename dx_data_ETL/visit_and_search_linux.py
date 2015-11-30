@@ -61,7 +61,7 @@ def say_hello():
     backup_redis = back_redis.BackRedis()
     backup_redis.main()
     global time_thread       #Notice: use global variable!
-    SECONDS_PER_DELTA = 20 * 60
+    SECONDS_PER_DELTA = 30 * 60
     time_thread = threading.Timer(SECONDS_PER_DELTA, say_hello)
     time_thread.start()
 
