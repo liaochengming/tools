@@ -12,8 +12,6 @@ class GetIPFromDaili666(object):
     api_url = ''
 
     def __init__(self):
-        '''
-        '''
         self.all_ip_list = []
         self.api_url = \
         'http://xvre.daili666api.com/ip/?tid=558465838696598&num=50&foreign=none&ports=80,8080'
