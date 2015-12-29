@@ -4,7 +4,6 @@ Created on 2015年12月23日
 
 @author: slm
 '''
-
 import ConfigParser
 
 class ReadFile(object):

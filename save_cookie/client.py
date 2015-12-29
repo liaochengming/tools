@@ -55,7 +55,7 @@ class GetCookie(object):
             #使用cursor()方法获取操作游标
             cursor = db_connect.cursor()
             select_sql = '''
-            select id, username, passwd, last_time from crawler_cookies where id > 5477
+            select id, username, passwd, last_time from crawler_cookies
             '''
             all_num = cursor.execute(select_sql)
             info = cursor.fetchmany(all_num)

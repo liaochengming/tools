@@ -7,11 +7,9 @@ import socket
 import random
 import global_num
 from lxml import html
-# from check_ip.test_data import test
 from check_ip.test_data import Data
 from check_ip.get_ip_from_daili666 import GetIPFromDaili666
 
-# USEFUL_IP_LIST = []
 socket.setdefaulttimeout(5)#5s后超时
 
 class CheckProxy(object):
@@ -25,7 +23,6 @@ class CheckProxy(object):
     callback = None
 
     def __init__(self):
-#         global USEFUL_IP_LIST
         self.test_ip_list = GetIPFromDaili666().all_ip_list
         if len(global_num.USEFUL_IP_LIST) > 0:
             self.test_ip_list += global_num.USEFUL_IP_LIST
@@ -67,7 +64,6 @@ class CheckProxy(object):
                 #存在验证码
                 print '===>%s==>需要验证码' % proxy
                 return
-#             global USEFUL_IP_LIST
             global_num.USEFUL_IP_LIST.append(ip)
             print '===>%s==>正常' % proxy
         except urllib2.HTTPError, e:

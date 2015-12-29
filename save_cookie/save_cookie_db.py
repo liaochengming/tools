@@ -47,7 +47,6 @@ class SaveCookie(object):
         db_connect.commit()
         cursor.close()
         db_connect.close()
-        print '===========SAVE OK======'
 
 def main():
     '''

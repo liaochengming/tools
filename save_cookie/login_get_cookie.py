@@ -11,8 +11,6 @@ import random
 import cookielib
 import socket
 import global_num
-# from check_ip.check_proxy import USEFUL_IP_LIST
-# USEFUL_IP_LIST = ["124.42.7.103:80"]
 
 class LoginGetCookie(object):
     '''
@@ -82,7 +80,6 @@ class LoginGetCookie(object):
             html = response.read()  # @UnusedVariable
         except:
             pass
-        print cj
         self.get_cookie(cj)
 
     def get_cookie(self, cj):
@@ -116,7 +113,6 @@ def main(uname, passwd):
     print login.userid
 
 if __name__ == '__main__':
-# 221.229.169.246:8080
     ip_list = ["221.229.169.246:8080"]
 #     main('005010354235', '710709')
     main('13862013414', '990515')
