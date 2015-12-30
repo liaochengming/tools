@@ -19,10 +19,10 @@ class SaveInDatabase(object):
         # 打开数据库连接
         # 192.168.0.2 root crawler hadoop
         # 112.124.49.59 migfm crawler miglab2012
-        db_connect = MySQLdb.connect(host='112.124.49.59',
-                                     user='migfm',
-                                     db='crawler',
-                                     passwd='miglab2012')
+        db_connect = MySQLdb.connect(host='222.73.34.101',
+                                     user='root',
+                                     db='crawler_test',
+                                     passwd='9fWagERpAs6hsikr')
         #使用cursor()方法获取操作游标
         cursor = db_connect.cursor()
         creat_sql = '''CREATE TABLE crawler_forge_ip (

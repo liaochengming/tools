@@ -17,15 +17,16 @@ class Data(object):
     test_urls = ['http://www.yicai.com/',
                  'http://www.sina.com.cn/',
                  'http://www.10jqka.com.cn/',
-                 'http://www.163.com/',
-                 'http://www.ifeng.com/',
-                 'http://www.hexun.com/',
-                 'http://www.xueqiu.com/',
-                 'http://www.eastmoney.com/',
-                 'http://www.qq.com/',
-                 'http://www.sohu.com/',
-                 'http://www.p5w.net/',
-                 'http://www.caijing.com.cn/',
-                 'http://www.cfi.net.cn/']
-
+                 'http://www.weibo.com/'
+#                 'http://www.163.com/',
+#                 'http://www.ifeng.com/',
+#                 'http://www.hexun.com/',
+#                 'http://www.xueqiu.com/',
+#                 'http://www.eastmoney.com/',
+#                 'http://www.qq.com/',
+#                 'http://www.sohu.com/',
+#                 'http://www.p5w.net/',
+#                 'http://www.caijing.com.cn/',
+#                 'http://www.cfi.net.cn/']
+                 ]
 test_data = Data()

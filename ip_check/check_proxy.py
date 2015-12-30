@@ -7,9 +7,8 @@ import socket
 import threading
 import random
 from test_data import test_data
-import time
 
-# socket.setdefaulttimeout(5)#10s后超时
+socket.setdefaulttimeout(5)#10s后超时
 
 class CheckProxy(object):
     '''
@@ -23,8 +22,6 @@ class CheckProxy(object):
 
     def __init__(self, ip_list, callback):
         appended_ip = []
-        self.process = 0
-        self.thread_cnt = 0
         self.test_ip_list = []
         self.callback = callback
         for ip_info in ip_list:
@@ -45,19 +42,17 @@ class CheckProxy(object):
         '''
         检测 利用多线程(每个线程爬全部测试网站)
         '''
-#         threads = []
+        threads = []
         for i in xrange(len(self.test_ip_list)):
             proxy_dic = self.test_ip_list[i]
-            one_thread = threading.Thread(target=self.use_thread, \
-                                          args=(proxy_dic,))
-#             threads.append(one_thread)
-#         for t in threads:
+            self.use_thread(proxy_dic)
+#            one_thread = threading.Thread(target=self.use_thread, \
+#                                          args=(proxy_dic,))
+#            threads.append(one_thread)
+#        for t in threads:
     #         是否等待父线程结束 默认false
-            one_thread.setDaemon(True)
-            one_thread.start()
-            self.thread_cnt += 1
-            while self.thread_cnt > 12:
-                time.sleep(0.5)
+#            t.setDaemon(True)
+#            t.start()
 
     def test_finished(self):
         self.test_cnt += 1
@@ -69,7 +64,7 @@ class CheckProxy(object):
                 time_out_p = time_out/test_url_cnt
                 refuse = ip_info['refuse']
                 refuse_p = refuse/test_url_cnt
-                if (time_out_p+refuse_p > 0.4) or time_out_p > 0.4 or refuse_p > 0.4:
+                if (time_out_p > 0.3 and refuse_p > 0.3) or time_out_p > 0.4 or refuse_p > 0.4:
                     #舍弃 used标记为0
                     self.test_ip_list[k].update({'used':0})
             if self.callback:
@@ -85,9 +80,6 @@ class CheckProxy(object):
             self.work(i, proxy, proxy_dic)
         self.test_finished()
         print proxy_dic
-        self.thread_cnt -= 1
-        self.process += 1
-        print 'check process: %d %%' % (self.process*100/len(self.test_ip_list))
 
     def work(self, index, proxy, proxy_dic):
         '''

@@ -13,8 +13,10 @@ class GetIPFromDaili666(object):
     def __init__(self):
         '''
         '''
+#        self.api_url = 'http://vxer.daili666api.com/ip/?\
+#tid=556150463429217&num=50&delay=3&foreign=none&ports=80,8080&filter=on'
         self.api_url = 'http://vxer.daili666api.com/ip/?\
-tid=558465838696598&num=50&delay=3&foreign=none&ports=80,8080'
+tid=558465838696598&num=50&delay=3&foreign=none&ports=80,8080'	
 
     def start_request(self):
         '''
@@ -28,10 +30,12 @@ tid=558465838696598&num=50&delay=3&foreign=none&ports=80,8080'
         urllib2.install_opener(opener)
         i_headers = {'User_Agent': user_agent}
         req = urllib2.Request(self.api_url, headers=i_headers)
-        data = urllib2.urlopen(req).read()
-        ip_port__list = data.split('\r\n')
-        for ip_port in ip_port__list:
-            one_dic = {'type':1, 'ip':ip_port, 'refuse':0, 'time_out':0, 'used':1}
-            #将json中的IP信息存入all_IP_list
-            self.all_ip_list.append(one_dic)
-        
+	try:
+            data = urllib2.urlopen(req).read()
+            ip_port__list = data.split('\r\n')
+            for ip_port in ip_port__list:
+                one_dic = {'type':1, 'ip':ip_port, 'refuse':0, 'time_out':0, 'used':1}
+                #将json中的IP信息存入all_IP_list
+                self.all_ip_list.append(one_dic)
+        except:
+	    print 'error'

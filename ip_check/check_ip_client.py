@@ -3,12 +3,10 @@
 doc
 '''
 import MySQLdb
-from get_ip_from_api import GetIPs
 from get_ip_from_daili666 import GetIPFromDaili666
 from check_proxy import CheckProxy
 from save_in_db import SaveInDatabase
 import time
-import datetime
 
 class Client(object):
     '''
@@ -23,10 +21,10 @@ class Client(object):
         # 打开数据库连接
         # 192.168.0.2 root crawler hadoop
         # 112.124.49.59 migfm crawler miglab2012
-        db = MySQLdb.connect(host='112.124.49.59',
-                             user='migfm',
-                             db='crawler',
-                             passwd='miglab2012')
+        db = MySQLdb.connect(host='222.73.34.101',
+                             user='root',
+                             db='crawler_test',
+                             passwd='9fWagERpAs6hsikr')
         #使用cursor()方法获取操作游标
         cursor = db.cursor()
         select_sql = 'select * from crawler.crawler_forge_ip;'
@@ -67,13 +65,10 @@ class Client(object):
 def main():
     while True:
         print 'start'
-        start_time = datetime.datetime.now().strftime('%b-%d-%y %H:%M:%S')
         client = Client()
         client.work()
         client = None
-        end_time = datetime.datetime.now().strftime('%b-%d-%y %H:%M:%S')
-        print start_time + '-----' + end_time 
-        time.sleep(20)
+        time.sleep(30)
 
 if __name__ == '__main__':
     main()
