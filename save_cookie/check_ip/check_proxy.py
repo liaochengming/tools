@@ -3,12 +3,14 @@
 doc
 '''
 import urllib2
+import time
 import socket
 import random
 import global_num
 from lxml import html
 from check_ip.test_data import Data
 from check_ip.get_ip_from_daili666 import GetIPFromDaili666
+import threading
 
 socket.setdefaulttimeout(5)#5s后超时
 
@@ -23,15 +25,26 @@ class CheckProxy(object):
     callback = None
 
     def __init__(self):
+        self.threads_num = 0
         self.test_ip_list = GetIPFromDaili666().all_ip_list
         if len(global_num.USEFUL_IP_LIST) > 0:
             self.test_ip_list += global_num.USEFUL_IP_LIST
+            self.test_ip_list = set(self.test_ip_list)
             global_num.USEFUL_IP_LIST = []
         test = Data()
         self.user_agents = test.user_agents
         self.test_urls = test.test_urls
         for ip in self.test_ip_list:
-            self.use_thread(ip)
+            while True:
+                if self.threads_num < 8:
+                    check_thread = threading.Thread(target=self.use_thread, args=(ip,))
+                    check_thread.setDaemon(True)
+                    check_thread.start()
+                    self.threads_num += 1
+                    break
+                else:
+                    time.sleep(1)
+#             self.use_thread(ip)
 
     def use_thread(self, ip):
         '''
@@ -62,15 +75,19 @@ class CheckProxy(object):
             img_url = doc.xpath(r'//img[@id="captchaImg"]//@data-src')
             if len(img_url[0]) > 0:
                 #存在验证码
-                print '===>%s==>需要验证码' % proxy
+#                 print '===>%s==>需要验证码' % proxy
+                self.threads_num -= 1
                 return
             global_num.USEFUL_IP_LIST.append(ip)
             print '===>%s==>正常' % proxy
+            self.threads_num -= 1
         except urllib2.HTTPError, e:
-            print '===>%s==>无效(%s)' % (proxy, e.reason)
+#             print '===>%s==>无效(%s)' % (proxy, e.reason)
+            self.threads_num -= 1
             return
         except Exception:
-            print '===>%s==>无效' % proxy
+            self.threads_num -= 1
+#             print '===>%s==>无效' % proxy
             return
 
 if __name__ == '__main__':

@@ -23,10 +23,10 @@ class LoginGetCookie(object):
         self.userid = ''
         self.last_time = ''
         self.cookie_name = ''
-        print len(global_num.USEFUL_IP_LIST)
+#         print len(global_num.USEFUL_IP_LIST)
         while len(global_num.USEFUL_IP_LIST) == 0:
-            print 'sleep'
-            print len(global_num.USEFUL_IP_LIST)
+#             print 'sleep'
+#             print len(global_num.USEFUL_IP_LIST)
             time.sleep(5)
         self.ip = random.choice(global_num.USEFUL_IP_LIST)
         self.login_ths()
@@ -47,32 +47,33 @@ class LoginGetCookie(object):
                                        'submit':'登　录'})
             request = urllib2.Request(login_url, params)
             request.set_proxy(self.ip, 'http')
-            response = opener.open(request)
+            response = opener.open(request,timeout=5)
             time.sleep(0.5)
-        except urllib2.URLError:
-            print global_num.USEFUL_IP_LIST
-            print '--------time out---------'
-            if self.ip in global_num.USEFUL_IP_LIST:
-                global_num.USEFUL_IP_LIST.remove(self.ip)
-            print global_num.USEFUL_IP_LIST
+        except urllib2.URLError,e:
+            print e
+#             print global_num.USEFUL_IP_LIST
+#             print '--------time out---------'
+#             if self.ip in global_num.USEFUL_IP_LIST:
+#                 global_num.USEFUL_IP_LIST.remove(self.ip)
+#             print global_num.USEFUL_IP_LIST
             self.cookie_name = 'PHPSESSID'
             return
         except socket.timeout:
-            print global_num.USEFUL_IP_LIST
-            print '--------socket.timeout---------'
-            if self.ip in global_num.USEFUL_IP_LIST:
-                global_num.USEFUL_IP_LIST.remove(self.ip)
-            print global_num.USEFUL_IP_LIST
+#             print global_num.USEFUL_IP_LIST
+#             print '--------socket.timeout---------'
+#             if self.ip in global_num.USEFUL_IP_LIST:
+#                 global_num.USEFUL_IP_LIST.remove(self.ip)
+#             print global_num.USEFUL_IP_LIST
             self.cookie_name = 'PHPSESSID'
             return
         except Exception, ex:
             print Exception, ":", ex
-            print self.ip
-            print self.uname
-            print self.passwd
-            print '------login error------'
-            print global_num.USEFUL_IP_LIST
-            print len(global_num.USEFUL_IP_LIST)
+#             print self.ip
+#             print self.uname
+#             print self.passwd
+#             print '------login error------'
+#             print global_num.USEFUL_IP_LIST
+#             print len(global_num.USEFUL_IP_LIST)
             self.cookie_name = 'PHPSESSID'
             return
         self.last_time = long(time.time())
@@ -91,8 +92,8 @@ class LoginGetCookie(object):
             for index, cookie in enumerate(cj):  # @UnusedVariable
                 if cookie.name == 'PHPSESSID':
                     self.cookie_name = cookie.name
-                    if self.ip in global_num.USEFUL_IP_LIST:
-                        global_num.USEFUL_IP_LIST.remove(self.ip)
+#                     if self.ip in global_num.USEFUL_IP_LIST:
+#                         global_num.USEFUL_IP_LIST.remove(self.ip)
                     return
                 element_str = cookie.name + '=' + cookie.value + ';'
                 cookies += element_str

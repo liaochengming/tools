@@ -79,7 +79,7 @@ class CheckProxy(object):
         for i in xrange(len(self.test_urls)):
             self.work(i, proxy, proxy_dic)
         self.test_finished()
-        print proxy_dic
+#         print proxy_dic
 
     def work(self, index, proxy, proxy_dic):
         '''

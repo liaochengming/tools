@@ -20,6 +20,10 @@ class GetCookie(object):
     def __init__(self):
         self.uname = ''
         self.passwd = ''
+        self.threads_num = 0
+        self.vaild_num = 0
+        self.request_num = 0
+        self.process = 0
         self.file = ReadFile()
         self.time_interval = int(self.file.time_interval)
         self.__use_thread()
@@ -41,7 +45,7 @@ class GetCookie(object):
             print 'start'
             CheckProxy()
             if len(global_num.USEFUL_IP_LIST) > 0:
-                time.sleep(10)
+                time.sleep(30)
 
     def get_uname_from_db(self):
         '''
@@ -66,13 +70,33 @@ class GetCookie(object):
         db_connect.commit()
         cursor.close()
         db_connect.close()
+        old_process = 0.0
         for info_id, uname, passwd, last_time in info:
+            self.process += 1
+            cur_process = (100.0*self.process/all_num)
+            if cur_process-old_process >= 0.5:
+                print 'process:%.2f %%' % cur_process
+                old_process = cur_process
             old_time = time.mktime(time.localtime(time.time()-self.time_interval))
             if last_time is None or last_time < old_time:
                 #时间间隔超过一定范围，更新，否则跳过
-                self.login_get_cookie(info_id, uname, passwd)
-            else:
-                print '=======skip, not update====='
+                while True:
+                    if self.threads_num < 8:
+                        get_cookie_thread = threading.Thread(target=self.login_get_cookie,
+                                                             args=(info_id,
+                                                                   uname,
+                                                                   passwd))
+                        get_cookie_thread.setDaemon(True)
+                        get_cookie_thread.start()
+                        self.threads_num += 1
+                        self.request_num += 1
+                        print 'request num:%d' % self.request_num
+                        break
+                    time.sleep(1)
+#                 self.login_get_cookie(info_id, uname, passwd)
+#             else:
+#                 print '=======skip, not update====='
+                
 
     def login_get_cookie(self, info_id, uname, passwd):
         '''
@@ -87,8 +111,11 @@ class GetCookie(object):
             is_valid = '0'
         else:
             is_valid = '1'
-        print login.cookie
+            self.vaild_num += 1
+            print 'valid num:%d' % self.vaild_num
+#         print login.cookie
         SaveCookie(info_id, login.cookie, login.last_time, login.userid, is_valid)
+        self.threads_num -= 1
 
 def main():
     '''
