@@ -59,10 +59,11 @@ class GetCookie(object):
             #使用cursor()方法获取操作游标
             cursor = db_connect.cursor()
             select_sql = '''
-            select id, username, passwd, last_time from crawler_cookies
+            select id, username, passwd, last_time from crawler_cookies order by id desc
             '''
             all_num = cursor.execute(select_sql)
             info = cursor.fetchmany(all_num)
+            print info
         except:
         # 发生错误时回滚
             print '------select error------'
