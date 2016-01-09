@@ -71,7 +71,7 @@ class GetCookie(object):
             info_num = self.select_limit_num
             while info_num == self.select_limit_num:
                 select_sql = '''
-                select id, username, passwd, last_time from crawler_cookie_info order by id desc limit %s, %s
+                select id, username, passwd, last_time from crawler_cookies order by id desc limit %s, %s
                 '''%(i, self.select_limit_num)
                 all_num = cursor.execute(select_sql)
                 info = ()

@@ -31,12 +31,12 @@ class SaveCookie(object):
         try:
             if len(self.unuseful_info_list) > 0:
                 update_sql = '''
-                UPDATE crawler_cookie_info SET is_valid = 0 where id = %s;'''
+                UPDATE crawler_cookies SET is_valid = 0 where id = %s;'''
                 cursor.executemany(update_sql, self.unuseful_info_list)
             if len(self.useful_info_list) > 0:
                 update_sql = '''
-                    UPDATE crawler_cookie_info SET 
-                    cookie = "%s",
+                    UPDATE crawler_cookies SET 
+                    cookie = %s,
                     last_time = %s,
                     plt_uid = %s,
                     is_valid = 1 where id = %s;'''
