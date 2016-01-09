@@ -91,7 +91,6 @@ class CheckProxy(object):
             return
 
 if __name__ == '__main__':
-    import time
     while True:
         print 'start'
         CheckProxy()

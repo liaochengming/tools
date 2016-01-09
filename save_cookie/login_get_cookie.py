@@ -47,9 +47,9 @@ class LoginGetCookie(object):
                                        'submit':'登　录'})
             request = urllib2.Request(login_url, params)
             request.set_proxy(self.ip, 'http')
-            response = opener.open(request,timeout=5)
+            response = opener.open(request, timeout=5)
             time.sleep(0.5)
-        except urllib2.URLError,e:
+        except urllib2.URLError, e:
             print e
 #             print global_num.USEFUL_IP_LIST
 #             print '--------time out---------'

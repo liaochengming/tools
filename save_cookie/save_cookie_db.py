@@ -11,12 +11,9 @@ class SaveCookie(object):
     '''
     将cookie信息添加到数据库
     '''
-    def __init__(self, info_id, cookie, last_time, plt_uid, is_valid):
-        self.info_id = info_id
-        self.cookie = cookie
-        self.last_time = last_time
-        self.plt_uid = plt_uid
-        self.is_valid = is_valid
+    def __init__(self, unuseful_info_list, useful_info_list):
+        self.unuseful_info_list = unuseful_info_list
+        self.useful_info_list = useful_info_list
         self.file = ReadFile()
         self.save_cookie()
 
@@ -31,15 +28,19 @@ class SaveCookie(object):
                                      db=self.file.db)
         #使用cursor()方法获取操作游标
         cursor = db_connect.cursor()
-        if self.is_valid == '0':
-            update_sql = '''
-            UPDATE crawler_cookies SET is_valid = 0 where id = %s''' %self.info_id
-        else:
-            update_sql = '''
-                UPDATE crawler_cookies SET cookie = "%s", last_time = %s, plt_uid = %s, is_valid = 1 where id = %s
-                ''' % (self.cookie, self.last_time, self.plt_uid, self.info_id)
         try:
-            cursor.execute(update_sql)
+            if len(self.unuseful_info_list) > 0:
+                update_sql = '''
+                UPDATE crawler_cookie_info SET is_valid = 0 where id = %s;'''
+                cursor.executemany(update_sql, self.unuseful_info_list)
+            if len(self.useful_info_list) > 0:
+                update_sql = '''
+                    UPDATE crawler_cookie_info SET 
+                    cookie = "%s",
+                    last_time = %s,
+                    plt_uid = %s,
+                    is_valid = 1 where id = %s;'''
+                cursor.executemany(update_sql, self.useful_info_list)
         except:
         # 发生错误时回滚(已存在此数据,更新)
             db_connect.rollback()
@@ -52,8 +53,9 @@ def main():
     '''
     执行
     '''
-    SaveCookie('86', '', '1', '0', '0')
-#     SaveCookie('86', 'icket=c006345df0b9bea038b67b2aae421834', '2015', '123', '1')
+    uname_info_list = [('ciikie', '1', '1', '178'), ('ciikie22222', '1', '2', '179')]
+#     SaveCookie('1', [], uname_info_list)
+    SaveCookie([(176)], uname_info_list)
 
 if __name__ == '__main__':
     main()

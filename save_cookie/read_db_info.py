@@ -23,5 +23,9 @@ class ReadFile(object):
         self.user = cf.get('db_info', 'user')
         self.passwd = cf.get('db_info', 'passwd')
         self.db = cf.get('db_info', 'db')
-        self.time_interval = cf.get('db_info', 'time_interval')
+        self.time_interval = cf.get('update_time_interval', 'time_interval')
+        #每次读取数据库的用户名的数量
+        self.select_limit_num = cf.get('select_limit_num', 'select_limit_num')
+        #批量存储cookie的数量
+        self.save_limit_num = cf.get('save_cookie_num', 'save_limit_num')
         
