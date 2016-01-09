@@ -138,7 +138,7 @@ class GetCookie(object):
             self.useful_uname_list.append(info_tuple)
             self.vaild_num += 1
             print 'valid num:%d' % self.vaild_num
-        #若循环结束，不足10个仍然存储
+        #若循环结束，不足仍然存储
         if self.vaild_num == self.save_limit_num or self.is_finish:
             self.vaild_num = 0
             SaveCookie(self.unuseful_uname_list, self.useful_uname_list)
