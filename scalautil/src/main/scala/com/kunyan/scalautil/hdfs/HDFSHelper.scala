@@ -11,6 +11,9 @@ import scala.collection.mutable.ListBuffer
 
 /**
   * Created by yangshuai on 2016/1/29.
+  * 使用本工具类需要在工程中添加如下依赖
+  * "org.apache.hadoop" % "hadoop-client" % "2.7.1",
+  * "org.apache.hadoop" % "hadoop-hdfs" % "2.7.1"
   */
 object HDFSHelper {
 
