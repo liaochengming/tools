@@ -11,12 +11,12 @@ object TextSender {
     * 发送短信,短信内容的格式为"${content}【${key}】"
     * id,account,password向组长索取
     *
-    * @param id
-    * @param account
-    * @param password
+    * @param id id
+    * @param account 账号
+    * @param password 密码
     * @param mobile 电话号码
-    * @param keyword
-    * @param content
+    * @param keyword "【】"中的内容
+    * @param content "【】"前的正文
     */
   def send(id: String, account: String, password: String, mobile: String, keyword: String, content: String): Unit = {
     val newContent = String.format("【%s】%s", keyword, content)
