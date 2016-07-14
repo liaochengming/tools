@@ -27,7 +27,6 @@ public class MergedFiles {
     public static boolean mergeFiles(String outFile, String[] files) {
 
         FileChannel outChannel = null;
-        System.out.println("Merge " + Arrays.toString(files) + " into " + outFile);
 
         try {
 
@@ -49,7 +48,6 @@ public class MergedFiles {
                 fc.close();
             }
 
-            System.out.println("Merged!! ");
             return true;
 
         } catch (IOException ioe) {

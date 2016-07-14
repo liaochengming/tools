@@ -67,7 +67,6 @@ public class SHKVDown {
 
                 if (cachedThreadPool.isTerminated()) {
 
-                    //System.out.println("结束了！");
                     String isOver = readFileByLines(fileOver);
 
                     if (isOver.equals("false")) {
@@ -202,7 +201,7 @@ public class SHKVDown {
     public static String getValue(String key, String token) throws Exception {
 
         String getValueByKey = "kv/getValueByKey?token=" + token + "&table=kunyan_to_upload_inter_tab_mr&key=" + key;
-        //System.out.println(getValueByKey);
+
         try {
 
             String value = doGet(getValueByKey);
@@ -279,7 +278,6 @@ public class SHKVDown {
     public static String doGet(String toDo) throws Exception {
 
         URL localURL = new URL("http://61.129.39.71/telecom-dmp/" + toDo);
-        System.out.println(localURL);
         URLConnection connection = localURL.openConnection();
         HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
 
