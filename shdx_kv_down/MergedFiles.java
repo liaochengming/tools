@@ -11,6 +11,7 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 
 
+
 /**
  * Created by liaochengming on 2015-12-14.
  * 此是用来检测指定文件夹下的数据文件，并合并数据文件
