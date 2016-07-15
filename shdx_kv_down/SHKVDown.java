@@ -18,18 +18,16 @@ import java.util.logging.Logger;
 
 /**
  * Created by liaochengming on 2015-12-14.
- *此类是用来下载上海电信kv表中的数据
- *
+ * 此类是用来下载上海电信kv表中的数据
  */
 public class SHKVDown {
+
 
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
     /**
-     *
-     * @param args
-     * args[0] 指定下载的时间（分钟）1表示0-4分钟。。。
-     * args[1] 指定下载的时间（小时）1表示1小时之前
+     * @param args args[0] 指定下载的时间（分钟）1表示0-4分钟。。。
+     *             args[1] 指定下载的时间（小时）1表示1小时之前
      */
     public static void main(String[] args) {
 
@@ -38,8 +36,11 @@ public class SHKVDown {
 
         try {
 
-            //合并文件，判断保存下载文件的文件夹下是否有上个小时的文件
-            //如果有就合并
+            /**
+             * 合并文件，判断保存下载文件的文件夹下是否有上个小时的文件
+             如果有就合并
+             */
+
             MergedFiles.doMer();
 
             String token = getToken();
@@ -47,8 +48,7 @@ public class SHKVDown {
             String fileOver;
             File writer_file;
 
-//            fileOver = "/home/telecom/shdx/bin/shdx_kv_down/write_over.txt";
-            fileOver = "F:\\write_over.txt";
+            fileOver = "/home/telecom/shdx/bin/shdx_kv_down/write_over.txt";
             writer_file = new File(fileOver);
             BufferedWriter writer = new BufferedWriter(new FileWriter(writer_file));
             int min_start = Integer.valueOf(args[0]);
@@ -67,6 +67,10 @@ public class SHKVDown {
 
                 if (cachedThreadPool.isTerminated()) {
 
+                    //休息随机时间
+                    Thread.sleep((int) (Math.random() * 20 * 1000));
+
+                    //System.out.println("结束了！");
                     String isOver = readFileByLines(fileOver);
 
                     if (isOver.equals("false")) {
@@ -103,11 +107,11 @@ public class SHKVDown {
 
     /**
      * 一行行读文件
-     * @param path
-     * path 文件路径
+     *
+     * @param path path 文件路径
      * @return 一行数据
      */
-    public static String readFileByLines(String path) {
+    private static String readFileByLines(String path) {
 
         File file = new File(path);
 
@@ -158,10 +162,11 @@ public class SHKVDown {
 
     /**
      * 将数字格式化
+     *
      * @param num 分钟和秒钟的数字
      * @return 固定格式的数字，如9改成09
      */
-    public static String getMS(int num) {
+    private static String getMS(int num) {
 
         String newNum;
 
@@ -180,10 +185,11 @@ public class SHKVDown {
 
     /**
      * 获取当前时间hour小时之前的时间字符串
+     *
      * @param hour 固定小时，指定为多少小时之前
      * @return yyyyMMddHH格式的字符串
      */
-    public static String getYearToHour(int hour) {
+    private static String getYearToHour(int hour) {
 
         Date oldTime = new Date(System.currentTimeMillis() - hour * 60 * 60 * 1000);
         SimpleDateFormat sdFormatter = new SimpleDateFormat("yyyyMMddHH");
@@ -193,15 +199,16 @@ public class SHKVDown {
 
     /**
      * 根据key获取value
-     * @param key 为kv数据表中的指定k，用来请求value
+     *
+     * @param key   为kv数据表中的指定k，用来请求value
      * @param token 固定的请求数据时需要的参数
      * @return 请求到的数据
      * @throws Exception
      */
-    public static String getValue(String key, String token) throws Exception {
+    private static String getValue(String key, String token) throws Exception {
 
         String getValueByKey = "kv/getValueByKey?token=" + token + "&table=kunyan_to_upload_inter_tab_mr&key=" + key;
-
+        //System.out.println(getValueByKey);
         try {
 
             String value = doGet(getValueByKey);
@@ -230,14 +237,15 @@ public class SHKVDown {
 
     /**
      * 获取电信的token的方法
+     *
      * @return 获取的token字符串
      * @throws Exception
      */
-    public static String getToken() throws Exception {
+    private static String getToken() throws Exception {
 
-        String apiKey = "98f5103019170612fd3a486e3d872c48";
-        String userName = "e_kunyan";
-        String password = "kunyan123";
+        String apiKey = KunYanUser.API_KEY;
+        String userName = KunYanUser.KUN_YAN_USER_NAME;
+        String password = KunYanUser.KUN_YAN_PASSWORD;
         String getToken = "getToken?apiKey=" + apiKey + "&" + "sign=" + sign(md5Encode(password), userName + apiKey);
         JSONObject jbToken = JSONObject.fromObject(doGet(getToken));
         return jbToken.getString("result");
@@ -246,10 +254,11 @@ public class SHKVDown {
 
     /**
      * 解码Base64字符串
+     *
      * @param str base64字符串
      * @return 解码后的字符串
      */
-    public static String getFromBASE64(String str) {
+    private static String getFromBASE64(String str) {
 
         if (str == null) return null;
 
@@ -271,13 +280,15 @@ public class SHKVDown {
 
     /**
      * 此方法为http请求
+     *
      * @param toDo 指定所需的请求
      * @return 请求到的数据
      * @throws Exception
      */
-    public static String doGet(String toDo) throws Exception {
+    private static String doGet(String toDo) throws Exception {
 
-        URL localURL = new URL("http://61.129.39.71/telecom-dmp/" + toDo);
+        URL localURL = new URL(KunYanUser.SHDX_KV_URL + toDo);
+        System.out.println(localURL);
         URLConnection connection = localURL.openConnection();
         HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
 
@@ -340,12 +351,13 @@ public class SHKVDown {
 
     /**
      * 获取http请求时所需的签名
+     *
      * @param secretKey 经过md5加密处理的秘钥
-     * @param data 用户名称和apiKey
+     * @param data      用户名称和apiKey
      * @return 签名字符串
      * @throws Exception
      */
-    public static String sign(String secretKey, String data) throws Exception {
+    private static String sign(String secretKey, String data) throws Exception {
 
         SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes(), HMAC_SHA1_ALGORITHM);
         Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
@@ -357,11 +369,12 @@ public class SHKVDown {
 
     /**
      * 对字符串做md5编码
+     *
      * @param str 需要md5编码的字符串
      * @return 做了md5编码之后的字符串
      * @throws Exception
      */
-    public static String md5Encode(String str) throws Exception {
+    private static String md5Encode(String str) throws Exception {
 
         MessageDigest md5;
 
@@ -396,7 +409,7 @@ public class SHKVDown {
 
 
     //类部类，线程类
-    static class DoGetValue implements Runnable {
+    private static class DoGetValue implements Runnable {
 
         private String s_min = "";
         private String s_sec = "";
@@ -407,7 +420,7 @@ public class SHKVDown {
         private String token;
 
         //构造方法，初始化类的变量
-        public DoGetValue(String year_to_hour, String s_min, int num, String token) {
+        DoGetValue(String year_to_hour, String s_min, int num, String token) {
 
             this.num = num;
             this.s_min = s_min;
@@ -418,8 +431,7 @@ public class SHKVDown {
 
         @Override
         public void run() {
-//            String filesPath = "/home/liaochengming/shdx/kv_down_files/";
-            String filesPath = "F:\\shdx\\";
+            String filesPath = "/home/liaochengming/shdx/kv_down_files/";
             File writer_file;
             String fileName = year_to_hour + num + ".txt";
             writer_file = new File(filesPath + fileName);
